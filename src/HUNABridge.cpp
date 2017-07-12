@@ -33,6 +33,7 @@
 
 #include <kinect2_bridge/kinect2_definitions.h>
 #include "ImageSender.hpp"
+//the defination of receiver
 
 class Receiver
 {

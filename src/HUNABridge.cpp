@@ -145,13 +145,12 @@ private:
 
     std::chrono::milliseconds duration(1);
 
-    OUT_INFO("connecting the image receiver...");
-    int port = 5000;
-    const char hostname[] = "localhost";
-    std::unique_ptr<ImageSender> temp_ptr(new ImageSender(hostname, port));
-    sender_ptr = std::move(temp_ptr);
-    sender_ptr->ConnectToReceiver();
-    sender_ptr->SendImageDims(cols, rows);
+    // connection initialization
+    OUT_INFO("Waiting for connection...");
+    int port = 10021;
+    std::unique_ptr<ImageSender> server_ptr(new ImageSender(port));
+    sender_ptr = std::move(server_ptr);
+    sender_ptr->ConnectToNetwork();
 
     while(!updateImage || !updateCloud)
     {
@@ -274,8 +273,10 @@ private:
           frameCount = 0;
         }
         // transferring the images through socket
-
-        sender_ptr->SendImage(this->color);
+        if(!sender_ptr->SendImage(this->depth)){
+        	OUT_INFO("Connection lost...");
+            running = false;
+        }
 
         // lock unlock
         //dispDepth(depth, depthDisp, 12000.0f);
@@ -284,7 +285,6 @@ private:
         combined = color;
         cv::putText(combined, oss.str(), pos, font, sizeText, colorText, lineText, CV_AA);
         cv::imshow("Image Viewer", combined);
-
       }
 
       int key = cv::waitKey(1);

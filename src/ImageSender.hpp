@@ -3,6 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 
+// this class is a socket server that wait for the connection
 class ImageSender {
  public:
   ImageSender(const char* hostname, int port);

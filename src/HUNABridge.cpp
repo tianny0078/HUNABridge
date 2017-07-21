@@ -246,7 +246,7 @@ private:
     const int lineText = 1;
     const int font = cv::FONT_HERSHEY_SIMPLEX;
 
-    cv::namedWindow("Image Viewer");
+    //cv::namedWindow("Image Viewer");
     oss << "starting...";
 
 

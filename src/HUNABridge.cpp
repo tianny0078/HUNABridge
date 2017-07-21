@@ -273,18 +273,28 @@ private:
           frameCount = 0;
         }
         // transferring the images through socket
-        if(!sender_ptr->SendImage(this->depth)){
+        //if(!sender_ptr->SendImage(this->depth)){
+        /*
+        if(!sender_ptr->SendDepthImage(this->depth)){
         	OUT_INFO("Connection lost...");
             running = false;
         }
+        */
+        cv::Mat color1;
+        cv::cvtColor(this->color, color1, CV_BGR2BGRA);
+        if(!sender_ptr->SendColorImage(color1)){
+        	OUT_INFO("Connection lost...");
+            running = false;
+        }
+
 
         // lock unlock
         //dispDepth(depth, depthDisp, 12000.0f);
         //combine(color, depthDisp, combined);
 
-        combined = color;
-        cv::putText(combined, oss.str(), pos, font, sizeText, colorText, lineText, CV_AA);
-        cv::imshow("Image Viewer", combined);
+        //combined = color;
+        //cv::putText(combined, oss.str(), pos, font, sizeText, colorText, lineText, CV_AA);
+        //cv::imshow("Image Viewer", combined);
       }
 
       int key = cv::waitKey(1);

@@ -72,6 +72,7 @@ include_directories(include
 add_executable(HUNABridge 
 	src/HUNABridge.cpp
 	src/ImageSender.cpp
+        src/DataWrapper.cpp
 	)
 target_link_libraries(HUNABridge
   ${catkin_LIBRARIES}

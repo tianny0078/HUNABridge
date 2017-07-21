@@ -17,6 +17,7 @@ ImageSender::ImageSender(int port) :
     sock_fdesc_init_(0),
     sock_fdesc_conn_(0) {
   client_len_ = server_addr_size_;
+    wrapper = new DataWrapper();
 }
 
 void ImageSender::ConnectToNetwork() {
@@ -124,8 +125,13 @@ bool ImageSender::SendImage(cv::Mat& mat) {
   asz.set((float)cols, (float)rows);
   size1 += sizeof(sz) + sizeof(asz);
   //printf("%d %d \n", sizeof(HNDimension), sizeof(HNPoint));
- //if(send(sock_fdesc_conn_, &size, sizeof(size), 0) == -1)
-   // printf("error sending size \n");
+  /*
+  printf("sending....");
+  if(send(sock_fdesc_conn_, &size1, sizeof(size1), 0) == -1){
+     printf("error sending size \n");
+     return false;
+  }
+  */
 
   std::vector<unsigned char> data;
   data.resize(size1);
@@ -159,6 +165,23 @@ bool ImageSender::SendImage(cv::Mat& mat) {
      return false;
   return true;
 }
+
+bool ImageSender::SendDepthImage(cv::Mat& depthImage){
+	std::vector<unsigned char> data;
+    int size = wrapper->WrapDepthImage(depthImage, data);
+    if(send(sock_fdesc_conn_,(char *)&data[0], size, 0) == -1)
+       return false;
+	return true;
+}
+
+bool ImageSender::SendColorImage(cv::Mat& colorImage){
+	std::vector<unsigned char> data;
+    int size = wrapper->WrapColorImage(colorImage, data);
+    if(send(sock_fdesc_conn_,(char *)&data[0], size, 0) == -1)
+       return false;
+	return true;
+}
+
 
 void ImageSender::ReceiveImageDims() {
 

@@ -2,6 +2,7 @@
 #define SOCKET_SERVER_HPP
 
 #include <string>
+#include <vector>
 #include <sstream>
 #include <cstdio>
 #include <cstring>
@@ -10,35 +11,12 @@
 #include <netinet/in.h>
 
 #include <opencv2/core/core.hpp>
-struct __attribute__((__packed__)) HNPoint{
-  long long _windowsPadding;
-  float  _x, _y;
-  HNPoint(float x, float y){
-    _x = x;
-    _y = y;
-  }
-  HNPoint(){ _x = 0.0f, _y = 0.0f; _windowsPadding = 0.0f;}
-};
-
-struct __attribute__((__packed__)) HNDimension{
-  long long _windowsPadding;
-  HNPoint topLeft, bottomRight;
-  void set(float tlx, float tly, float brx, float bry){
-      topLeft._x = tlx;
-      topLeft._y = tly;
-      bottomRight._x = brx;
-      bottomRight._y = bry;
-  }
-  void set(float width, float height){
-    set(0, 0, width - 1, height - 1);
-  }
-  HNDimension() {set (0, 0);_windowsPadding = 0.0f;}
-  HNDimension(float width, float height) {set(width, height);}
-};
+#include "DataWrapper.hpp"
 
 class ImageSender {
  public:
   ImageSender(int port);
+  ~ImageSender(){delete wrapper;}
   void ConnectToNetwork();
   void ReceiveImageDims();
   void ReceiveImage(cv::Mat& image);
@@ -46,6 +24,8 @@ class ImageSender {
   void SendTestInt();
   void GenerateImage(int rows,int cols, cv::Mat& image);
   bool SendImage(cv::Mat& image);
+  bool SendDepthImage(cv::Mat& depthImage);
+  bool SendColorImage(cv::Mat& colorImage);
   int GetWidth();
   int GetHeight();
 
@@ -61,6 +41,7 @@ class ImageSender {
   int pic_count_;
   int sock_fdesc_init_;
   int sock_fdesc_conn_;
+  DataWrapper * wrapper;
 };
 
 #endif

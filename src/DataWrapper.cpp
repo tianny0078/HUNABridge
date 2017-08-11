@@ -6,7 +6,7 @@
  */
 
 #include "DataWrapper.hpp"
-
+//public
 int DataWrapper::WrapDepthImage(cv::Mat & depthImage, std::vector<unsigned char>& data){
 	int size = GetTailSize() + GetDepthImageSize(depthImage);
 	int packetSize = size + sizeof(size);
@@ -15,7 +15,6 @@ int DataWrapper::WrapDepthImage(cv::Mat & depthImage, std::vector<unsigned char>
     int pos = 0;
     memcpy(pdata+pos, &size, sizeof(size));
     pos += sizeof(size);
-    WrapHeader(HNCAPTUREDDEPTHIMAGE_ID, pdata, pos);
     WrapDepthImage(depthImage, pdata, pos);
     WrapTail(1, 1, pdata, pos);
     return packetSize;
@@ -29,17 +28,34 @@ int DataWrapper::WrapColorImage(cv::Mat & colorImage, std::vector<unsigned char>
     int pos = 0;
     memcpy(pdata+pos, &size, sizeof(size));
     pos += sizeof(size);
-    WrapHeader(HNCAPTUREDIMAGE_ID, pdata, pos);
     WrapColorImage(colorImage, pdata, pos);
     WrapTail(1, 1, pdata, pos);
     return packetSize;
 }
 
+int DataWrapper::WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, std::vector<unsigned char>& data){
+    int size = GetTailSize() + GetKinectDataSize(depthImage, colorImage);
+    int packetSize = size + sizeof(size);
+	data.resize(packetSize);
+	auto pdata = &data[0];
+	int pos = 0;
+	memcpy(pdata+pos, &size, sizeof(size));
+	pos += sizeof(size);
+	WrapKinectData(depthImage, colorImage, pdata, pos);
+	WrapTail(1, 1, pdata, pos);
+	return packetSize;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+// private
+////////////////////////////////////////////////////////////////////////////////////
 int DataWrapper::WrapDepthImage(cv::Mat & depthImage, unsigned char * pdata, int &pos){
 	int imgsize = depthImage.rows * depthImage.cols;
 	HNDimension sz, asz;
 	sz.set((float)depthImage.cols, (float)depthImage.rows);
 	asz.set((float)depthImage.cols, (float)depthImage.rows);
+	//header
+    WrapHeader(HNCAPTUREDDEPTHIMAGE_ID, pdata, pos);
 	// image
 	memcpy(pdata+pos, &imgsize, sizeof(imgsize));
 	pos += sizeof(imgsize);
@@ -57,6 +73,8 @@ int DataWrapper::WrapColorImage(cv::Mat & colorImage, unsigned char * pdata, int
 	HNDimension sz, asz;
 	sz.set((float)colorImage.cols, (float)colorImage.rows);
 	asz.set((float)colorImage.cols, (float)colorImage.rows);
+	// header
+    WrapHeader(HNCAPTUREDIMAGE_ID, pdata, pos);
 	// image
 	memcpy(pdata+pos, &imgsize, sizeof(imgsize));
 	pos += sizeof(imgsize);
@@ -67,10 +85,43 @@ int DataWrapper::WrapColorImage(cv::Mat & colorImage, unsigned char * pdata, int
 	memcpy(pdata+pos, &asz, sizeof(asz));
 	pos += sizeof(asz);
 	return 0;
-
 }
 
-int DataWrapper::WrapKinectData(cv::Mat & detphImage, cv::Mat & colorImage, unsigned char * data, int &pos){
+int DataWrapper::WrapIndexImage(cv::Mat & indexImage, unsigned char * pdata, int &pos){
+	int imgsize = indexImage.rows * indexImage.cols;
+	HNDimension sz, asz;
+	sz.set((float)indexImage.cols, (float)indexImage.rows);
+	asz.set((float)indexImage.cols, (float)indexImage.rows);
+	// header
+    WrapHeader(HNCAPTUREDINDEXIMAGE_ID, pdata, pos);
+	// image
+	memcpy(pdata+pos, &imgsize, sizeof(imgsize));
+	pos += sizeof(imgsize);
+	memcpy(pdata+pos, indexImage.data, sizeof(unsigned char) * imgsize);
+	pos += sizeof(unsigned char) * imgsize;
+	memcpy(pdata+pos, &sz, sizeof(sz));
+	pos += sizeof(sz);
+	memcpy(pdata+pos, &asz, sizeof(asz));
+	pos += sizeof(asz);
+	return 0;
+}
+
+int DataWrapper::WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, unsigned char * pdata, int &pos){
+	// header
+	WrapHeader(HNCAPTUREDKINECTDATA_ID, pdata, pos);
+	// images
+    cv::Mat fakeDepthImage = cv::Mat::zeros(cv::Size2i(1, 1), CV_16U);
+    WrapDepthImage(fakeDepthImage, pdata, pos);
+	WrapDepthImage(depthImage, pdata, pos);
+    cv::Mat fakeIndexImage = cv::Mat::zeros(cv::Size2i(1, 1), CV_8U);
+    WrapIndexImage(fakeIndexImage, pdata, pos);
+	WrapColorImage(colorImage, pdata, pos);
+	unsigned char activeSkeleton = 2;
+    memcpy(pdata+pos, &activeSkeleton, sizeof(activeSkeleton));
+    pos += sizeof(activeSkeleton);
+    unsigned int skeletonSize = 0;
+    memcpy(pdata+pos, &skeletonSize, sizeof(skeletonSize));
+    pos += sizeof(skeletonSize);
     return 0;
 }
 
@@ -83,10 +134,6 @@ int DataWrapper::WrapHeader(unsigned int eventid, unsigned char * pdata, int & p
 	memcpy(pdata+pos, &time, sizeof(time));
 	pos += sizeof(time);
     return pos;
-}
-
-int DataWrapper::WrapIndexImage(cv::Mat & indexImage, unsigned char * pdata, int &pos){
-    return 0;
 }
 
 int DataWrapper::WrapTail(int packageType, long long timestep,
@@ -104,17 +151,23 @@ int DataWrapper::GetHeaderSize(){
 int DataWrapper::GetDepthImageSize(cv::Mat & depthImage){
 	// including depth image size and header size
 	int imgsize = depthImage.rows * depthImage.cols;
-	return sizeof(imgsize) + imgsize * sizeof(unsigned short) + sizeof(HNDimension) * 2 + GetHeaderSize();
+	return sizeof(imgsize) + imgsize * sizeof(unsigned short) + sizeof(HNDimension) * 2  + GetHeaderSize();
 }
 int DataWrapper::GetColorImageSize(cv::Mat & colorImage){
 	int imgsize = colorImage.rows * colorImage.cols;
 	return sizeof(imgsize) + imgsize * sizeof(RGBQUAD) + sizeof(HNDimension) * 2 + GetHeaderSize();
 }
-int DataWrapper::GetIndexImageSize(){
-    return 0;
+int DataWrapper::GetIndexImageSize(cv::Mat & indexImage){
+	int imgsize = indexImage.rows * indexImage.cols;
+    return sizeof(imgsize) + imgsize * sizeof(unsigned char) + sizeof(HNDimension) * 2 + GetHeaderSize();
 }
-int DataWrapper::GetKinetDataSize(){
-    return 0;
+int DataWrapper::GetKinectDataSize(cv::Mat & depthImage, cv::Mat & colorImage){
+	cv::Mat fakeDepthImage = cv::Mat::zeros(cv::Size2i(1, 1), CV_16U);
+	cv::Mat fakeIndexImage = cv::Mat::zeros(cv::Size2i(1, 1), CV_8U);
+	unsigned char activeSkeleton = 'x';
+	unsigned int skeletonSize = 0;
+    return GetDepthImageSize(depthImage) + GetDepthImageSize(fakeDepthImage) + GetColorImageSize(colorImage)
+    		+ GetIndexImageSize(fakeIndexImage) + sizeof(activeSkeleton) + sizeof(skeletonSize) + GetHeaderSize();
 }
 int DataWrapper::GetTailSize(){
 	return sizeof(int) + sizeof(long long);

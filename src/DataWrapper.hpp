@@ -22,18 +22,19 @@ public:
 	DataWrapper(){}
     int WrapDepthImage(cv::Mat& depthImage, std::vector<unsigned char>& data);
     int WrapColorImage(cv::Mat& colorImage, std::vector<unsigned char>& data);
+    int WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, std::vector<unsigned char>& data);
 private:
     int WrapDepthImage(cv::Mat & depthImage, unsigned char * data, int &pos);
     int WrapColorImage(cv::Mat & colorImage, unsigned char * data, int &pos);
-    int WrapKinectData(cv::Mat & detphImage, cv::Mat & colorImage, unsigned char * data, int &pos);
+    int WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, unsigned char * data, int &pos);
     int WrapHeader(unsigned int eventid, unsigned char * data, int &pos);
     int WrapIndexImage(cv::Mat & indexImage, unsigned char * data, int &pos);
     int WrapTail(int packageType, long long timestep, unsigned char * data, int &pos);
     int GetHeaderSize();
     int GetDepthImageSize(cv::Mat & depthImage);
     int GetColorImageSize(cv::Mat & colorImage);
-    int GetIndexImageSize();
-    int GetKinetDataSize();
+    int GetIndexImageSize(cv::Mat & indexImage);
+    int GetKinectDataSize(cv::Mat & depthImage, cv::Mat & colorImage);
     int GetTailSize();
 };
 

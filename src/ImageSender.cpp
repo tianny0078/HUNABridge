@@ -182,6 +182,14 @@ bool ImageSender::SendColorImage(cv::Mat& colorImage){
 	return true;
 }
 
+bool ImageSender::SendKinectData(cv::Mat& depthImage, cv::Mat& colorImage){
+	std::vector<unsigned char> data;
+	int size = wrapper->WrapKinectData(depthImage, colorImage, data);
+    if(send(sock_fdesc_conn_,(char *)&data[0], size, 0) == -1)
+       return false;
+	return true;
+}
+
 
 void ImageSender::ReceiveImageDims() {
 

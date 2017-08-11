@@ -280,13 +280,23 @@ private:
             running = false;
         }
         */
+
+        /*
         cv::Mat color1;
         cv::cvtColor(this->color, color1, CV_BGR2BGRA);
         if(!sender_ptr->SendColorImage(color1)){
         	OUT_INFO("Connection lost...");
             running = false;
         }
+        */
 
+
+        cv::Mat color1;
+        cv::cvtColor(this->color, color1, CV_BGR2BGRA);
+        if(!sender_ptr->SendKinectData(this->depth, color1)){
+        	OUT_INFO("Connection lost...");
+            running = false;
+        }
 
         // lock unlock
         //dispDepth(depth, depthDisp, 12000.0f);

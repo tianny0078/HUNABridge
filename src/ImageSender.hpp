@@ -26,6 +26,7 @@ class ImageSender {
   bool SendImage(cv::Mat& image);
   bool SendDepthImage(cv::Mat& depthImage);
   bool SendColorImage(cv::Mat& colorImage);
+  bool SendKinectData(cv::Mat& depthImage, cv::Mat& colorImage);
   int GetWidth();
   int GetHeight();
 

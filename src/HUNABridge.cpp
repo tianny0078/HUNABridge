@@ -153,11 +153,14 @@ private:
     std::unique_ptr<ImageSender> server_ptr(new ImageSender(port));
     sender_ptr = std::move(server_ptr);
     sender_ptr->ConnectToNetwork();
+    OUT_INFO("Connection is built...");
 
+    OUT_INFO("Waiting for another connection...");
     port = 10022;
     std::unique_ptr<ImageSender> client_ptr(new ImageSender(port));
     receiver_ptr=std::move(client_ptr);
-    receiver_ptr->ConnectToNetwork();
+    receiver_ptr->ConnectToNetwork("10.204.90.114", 10022);
+    OUT_INFO("Connection is built...");
 
     while(!updateImage || !updateCloud)
     {

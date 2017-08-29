@@ -71,6 +71,9 @@ void ImageSender::ConnectToNetwork(char * hostname, int port){
 	struct addrinfo addrinfo_hints;
 	struct addrinfo* addrinfo_resp;
 
+	hostname_ = hostname;
+	port_ = port;
+
 	  // Specify criteria for address structs to be returned by getAddrinfo
 	memset(&addrinfo_hints, 0, sizeof(addrinfo_hints));
 	  addrinfo_hints.ai_socktype = SOCK_STREAM;

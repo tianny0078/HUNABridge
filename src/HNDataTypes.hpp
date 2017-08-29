@@ -50,5 +50,11 @@ typedef struct tagRGBQUAD{
 	unsigned char rgbReserved;
 } RGBQUAD;
 
+typedef struct HNPoint4{
+	float x;
+	float y;
+	float z;
+	float w;
+} HNPointXYZW;
 
 #endif /* SRC_HNDATATYPES_HPP_ */

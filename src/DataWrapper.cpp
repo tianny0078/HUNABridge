@@ -7,8 +7,17 @@
 
 #include "DataWrapper.hpp"
 //public
-void DataWrapper::UnwrapXYZWData(unsigned char * data, float &x, float &y, float &z, float& w){
+void DataWrapper::UnwrapXYZWData(unsigned char * pdata, float &x, float &y, float &z, float& w){
 	// parse the saved data into (x, y, z, w).
+	long long time;
+	unsigned int eventid;
+	int pos = 0;
+	// wrap eventid and capturedTime
+	memcpy(&eventid, pdata+pos, sizeof(eventid));
+	pos += sizeof(eventid);
+	memcpy(&time, pdata+pos, sizeof(time));
+	pos += sizeof(time);
+	//
 }
 
 

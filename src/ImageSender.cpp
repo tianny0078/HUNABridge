@@ -21,7 +21,8 @@ ImageSender::ImageSender(int port) :
 }
 
 void ImageSender::ConnectToNetwork() {
-
+  printf("SIZE: %d \n", sizeof(HNPointXYZW));
+  return;
   // Initialize Socket
   sock_fdesc_init_ = socket(AF_INET, SOCK_STREAM, 0);
   if (sock_fdesc_init_ == -1) {
@@ -68,6 +69,7 @@ void ImageSender::ConnectToNetwork() {
 }
 
 void ImageSender::ConnectToNetwork(char * hostname, int port){
+	return;
 	struct addrinfo addrinfo_hints;
 	struct addrinfo* addrinfo_resp;
 
@@ -309,6 +311,15 @@ void ImageSender::ReceiveImage(cv::Mat& image) {
   std::ostringstream oss;
   oss << out_path_ << "/pic_" << std::to_string(pic_count_++) << ".jpg";
   pic_filename_ = oss.str();
+}
+
+void ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
+	int size = 0;
+	int bytes = recv(socket_fdesc_, (char *)&size, sizeof(int), 0);
+	std::vector<unsigned char> data;
+	bytes = recv(socket_fdesc_, (char *)&data, size, 0);
+	if(bytes != size) printf("Full packet not read\n");
+	wrapper->UnwrapXYZWData(&data[0], x, y, z, w);
 }
 
 void ImageSender::WriteImage(cv::Mat& image) {

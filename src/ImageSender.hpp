@@ -24,6 +24,7 @@ class ImageSender {
   void ConnectToNetwork(char * hostname, int port);
   void ReceiveImageDims();
   void ReceiveImage(cv::Mat& image);
+  void ReceiveXYZW(float &x, float &y, float &z, float &w);
   void WriteImage(cv::Mat& image);
   void SendTestInt();
   void GenerateImage(int rows,int cols, cv::Mat& image);

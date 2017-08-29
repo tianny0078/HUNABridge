@@ -7,8 +7,11 @@
 #include <cstdio>
 #include <cstring>
 #include <cctype> // isdigit
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <cstdio>
+#include <netdb.h>
 
 #include <opencv2/core/core.hpp>
 #include "DataWrapper.hpp"
@@ -44,6 +47,7 @@ class ImageSender {
   int pic_count_;
   int sock_fdesc_init_;
   int sock_fdesc_conn_;
+  int socket_fdesc_;
   DataWrapper * wrapper;
 };
 

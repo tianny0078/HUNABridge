@@ -7,6 +7,11 @@
 
 #include "DataWrapper.hpp"
 //public
+void DataWrapper::UnwrapXYZWData(unsigned char * data, float &x, float &y, float &z, float& w){
+	// parse the saved data into (x, y, z, w).
+}
+
+
 int DataWrapper::WrapDepthImage(cv::Mat & depthImage, std::vector<unsigned char>& data){
 	int size = GetTailSize() + GetDepthImageSize(depthImage);
 	int packetSize = size + sizeof(size);

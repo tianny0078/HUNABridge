@@ -74,6 +74,7 @@ private:
   message_filters::Synchronizer<ApproximateSyncPolicy> *syncApproximate;
 
   std::thread imageViewerThread;
+  std::thread youbotControlThread;
   Mode mode;
 
   pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud;
@@ -81,6 +82,7 @@ private:
   std::ostringstream oss;
   std::vector<int> params;
   std::unique_ptr<ImageSender> sender_ptr;
+  std::unique_ptr<ImageSender> receiver_ptr;
 
   int rows;
   int cols;
@@ -151,6 +153,11 @@ private:
     std::unique_ptr<ImageSender> server_ptr(new ImageSender(port));
     sender_ptr = std::move(server_ptr);
     sender_ptr->ConnectToNetwork();
+
+    port = 10022;
+    std::unique_ptr<ImageSender> client_ptr(new ImageSender(port));
+    receiver_ptr=std::move(client_ptr);
+    receiver_ptr->ConnectToNetwork();
 
     while(!updateImage || !updateCloud)
     {
@@ -330,6 +337,20 @@ private:
     }
     cv::destroyAllWindows();
     cv::waitKey(100);
+  }
+
+  void youbotController(){
+	std::chrono::time_point<std::chrono::high_resolution_clock> start, now;
+	start = std::chrono::high_resolution_clock::now();
+	for(; running && ros::ok();)
+	{
+		// receive the data
+
+		// parse into (x, y, z, w)
+
+		// control the robot
+
+	}
   }
 
   void cloudViewer()

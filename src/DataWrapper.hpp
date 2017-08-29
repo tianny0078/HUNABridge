@@ -23,6 +23,7 @@ public:
     int WrapDepthImage(cv::Mat& depthImage, std::vector<unsigned char>& data);
     int WrapColorImage(cv::Mat& colorImage, std::vector<unsigned char>& data);
     int WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, std::vector<unsigned char>& data);
+    void UnwrapXYZWData(unsigned char * data, float &x, float &y, float &z, float& w);
 private:
     int WrapDepthImage(cv::Mat & depthImage, unsigned char * data, int &pos);
     int WrapColorImage(cv::Mat & colorImage, unsigned char * data, int &pos);

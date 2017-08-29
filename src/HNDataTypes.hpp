@@ -14,6 +14,9 @@
 #define HNCAPTUREDINDEXIMAGE_ID 1012
 #define HNCAPTUREDIMAGE_ID 1010
 
+#define HNBASICPOINTXYZWDATA_ID 10007
+#define HNBASICPOINTXYZDATA_ID 10006
+
 struct __attribute__((__packed__)) HNPoint{
   long long _windowsPadding;
   float  _x, _y;

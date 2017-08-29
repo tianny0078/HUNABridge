@@ -67,6 +67,41 @@ void ImageSender::ConnectToNetwork() {
   }
 }
 
+void ImageSender::ConnectToNetwork(char * hostname, int port){
+	struct addrinfo addrinfo_hints;
+	struct addrinfo* addrinfo_resp;
+
+	  // Specify criteria for address structs to be returned by getAddrinfo
+	memset(&addrinfo_hints, 0, sizeof(addrinfo_hints));
+	  addrinfo_hints.ai_socktype = SOCK_STREAM;
+	  addrinfo_hints.ai_family = AF_INET;
+
+	  // Populate addr_info_resp with address responses matching hints
+	  if (getaddrinfo(hostname_, std::to_string(port_).c_str(),
+	                  &addrinfo_hints, &addrinfo_resp) != 0) {
+	    perror("Couldn't connect to host!");
+	    exit(1);
+	  }
+
+	  // Create socket file descriptor for server
+	  socket_fdesc_ = socket(addrinfo_resp->ai_family, addrinfo_resp->ai_socktype,
+	                        addrinfo_resp->ai_protocol);
+	  if (socket_fdesc_ == -1) {
+	    perror("Error opening socket");
+	    exit(1);
+	  }
+
+	  // Connect to server specified in address struct, assign process to server
+	  // file descriptor
+	  if (connect(socket_fdesc_, addrinfo_resp->ai_addr,
+	              addrinfo_resp->ai_addrlen) == -1) {
+	    perror("Error connecting to address");
+	    exit(1);
+	  }
+
+	  free(addrinfo_resp);
+}
+
 void ImageSender::SendTestInt() {
   unsigned int eventid = 10001;
   long long time = 20170713;

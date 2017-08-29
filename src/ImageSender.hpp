@@ -18,6 +18,7 @@ class ImageSender {
   ImageSender(int port);
   ~ImageSender(){delete wrapper;}
   void ConnectToNetwork();
+  void ConnectToNetwork(char * hostname, int port);
   void ReceiveImageDims();
   void ReceiveImage(cv::Mat& image);
   void WriteImage(cv::Mat& image);
@@ -39,6 +40,7 @@ class ImageSender {
   socklen_t client_len_;
   size_t server_addr_size_;
   int port_;
+  const char * hostname_;
   int pic_count_;
   int sock_fdesc_init_;
   int sock_fdesc_conn_;

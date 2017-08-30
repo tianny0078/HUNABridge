@@ -72,6 +72,7 @@ private:
   typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> ApproximateSyncPolicy;
 
   ros::NodeHandle nh;
+  ros::NodeHandle nh2;
   ros::AsyncSpinner spinner;
   image_transport::ImageTransport it;
   image_transport::SubscriberFilter *subImageColor, *subImageDepth;
@@ -114,7 +115,7 @@ public:
     rows = 424;
     cols = 512;
     
-    platformPublisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    platformPublisher = nh2.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     sleep(1);
     if(!platformPublisher){
     	OUT_INFO("publisher is not existing...");

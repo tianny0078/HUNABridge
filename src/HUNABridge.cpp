@@ -116,6 +116,9 @@ public:
     
     platformPublisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     sleep(1);
+    if(!platformPublisher){
+    	OUT_INFO("publisher is not existing...");
+    }
     count = 0;
   }
 
@@ -230,6 +233,9 @@ private:
     if(mode == BOTH)
     {
       imageViewerThread.join();
+    }
+    if(mode == CONTROL){
+      youbotControlThread.join();
     }
   }
 

@@ -8,7 +8,6 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
-#include <fstream>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -90,8 +89,6 @@ private:
   int rows;
   int cols;
 
-  std::ofstream fs;
-
 public:
   Receiver(const std::string &topicColor, const std::string &topicDepth, const bool useExact, const bool useCompressed)
     : topicColor(topicColor), topicDepth(topicDepth), useExact(useExact), useCompressed(useCompressed),
@@ -111,12 +108,10 @@ public:
     rows = 424;
     cols = 512;
 
-    fs.open("/home/opnear/catkin_ws/test.txt");
   }
 
   ~Receiver()
   {
-	  fs.close();
   }
 
   void run(const Mode mode)
@@ -363,7 +358,6 @@ private:
 		// receive the data
 		float x = 0.0, y = 0.0, z = 0.0, w = 0.0;
 		OUT_INFO("BEFORE RECEIVE..");
-		fs << x << " " << y << std::endl;
 
         if(!receiver_ptr->ReceiveXYZW(x, y, z, w)){
         	OUT_INFO("Connection lost...");

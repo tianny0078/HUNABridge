@@ -18,6 +18,7 @@ ImageSender::ImageSender(int port) :
     sock_fdesc_conn_(0) {
   client_len_ = server_addr_size_;
     wrapper = new DataWrapper();
+    fs.open("/home/opnear/catkin_ws/test.txt");
 }
 
 void ImageSender::ConnectToNetwork() {
@@ -314,6 +315,7 @@ void ImageSender::ReceiveImage(cv::Mat& image) {
 bool ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
 	int size = 0;
 	int bytes = recv(socket_fdesc_, (char *)&size, sizeof(int), 0);
+	fs << size << std::endl;
 
 	std::vector<unsigned char> data;
 	bytes = recv(socket_fdesc_, (char *)&data[0], size, 0);

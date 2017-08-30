@@ -12,6 +12,7 @@
 #include <netinet/in.h>
 #include <cstdio>
 #include <netdb.h>
+#include <fstream>
 
 #include <opencv2/core/core.hpp>
 #include "DataWrapper.hpp"
@@ -19,7 +20,7 @@
 class ImageSender {
  public:
   ImageSender(int port);
-  ~ImageSender(){delete wrapper;}
+  ~ImageSender(){delete wrapper;fs.close();}
   void ConnectToNetwork();
   void ConnectToNetwork(char * hostname, int port);
   void ReceiveImageDims();
@@ -50,6 +51,8 @@ class ImageSender {
   int sock_fdesc_conn_;
   int socket_fdesc_;
   DataWrapper * wrapper;
+
+  std::ofstream fs;
 };
 
 #endif

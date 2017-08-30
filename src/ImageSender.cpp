@@ -21,8 +21,6 @@ ImageSender::ImageSender(int port) :
 }
 
 void ImageSender::ConnectToNetwork() {
-  printf("SIZE: %d \n", sizeof(HNPointXYZW));
-  return;
   // Initialize Socket
   sock_fdesc_init_ = socket(AF_INET, SOCK_STREAM, 0);
   if (sock_fdesc_init_ == -1) {
@@ -69,7 +67,7 @@ void ImageSender::ConnectToNetwork() {
 }
 
 void ImageSender::ConnectToNetwork(char * hostname, int port){
-	return;
+
 	struct addrinfo addrinfo_hints;
 	struct addrinfo* addrinfo_resp;
 

@@ -162,7 +162,7 @@ private:
     receiver_ptr=std::move(client_ptr);
     receiver_ptr->ConnectToNetwork("10.204.90.114", 10022);
     OUT_INFO("Connection is built...");
-return;
+
     while(!updateImage || !updateCloud)
     {
       if(!ros::ok())

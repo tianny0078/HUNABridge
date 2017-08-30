@@ -18,6 +18,7 @@
 
 #include <ros/ros.h>
 #include <ros/spinner.h>
+#include <ros/console.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 
@@ -360,9 +361,7 @@ private:
             running = false;
         }
 
-
-        std::cout << x << " " << y << " " << z
-        		<< " " << w << std::endl;
+        ROS_DEBUG("%f %f %f %f", x, y, z, w);
 		// control the robot
         // use the x, y, z, w to control the robot
         // x, y (linear velocity), z, w (angular velocity)

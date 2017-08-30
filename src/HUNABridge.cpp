@@ -388,6 +388,9 @@ private:
 		if(count == 0){
 			OUT_INFO("MOVING...");
 			geometry_msgs::Twist twist;
+			ros::Rate poll_rate(100);
+			while(platformPublisher.getNumSubscribers() == 0)
+			    poll_rate.sleep();
 
 			twist.linear.x = 0.05;  // with 0.05 m per sec
 			twist.linear.y = 0;

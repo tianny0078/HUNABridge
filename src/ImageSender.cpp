@@ -318,6 +318,7 @@ bool ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
 	fs << size << std::endl;
 
 	std::vector<unsigned char> data;
+	data.resize(size);
 	bytes = recv(socket_fdesc_, (char *)&data[0], size, 0);
 	if(bytes != size) {
 		printf("Full packet not read\n");

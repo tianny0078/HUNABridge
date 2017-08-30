@@ -50,10 +50,19 @@ typedef struct tagRGBQUAD{
 	unsigned char rgbReserved;
 } RGBQUAD;
 
-typedef struct HNPoint4{
+typedef struct HNPoint2{
+	long long _windowsPadding;
 	float x;
 	float y;
+} HNPointXY;
+
+typedef struct HNPoint3 : public HNPoint2{
+	long _windowsPadding;
 	float z;
+} HNPointXYZ;
+
+typedef struct HNPoint4: public HNPoint3{
+	long _windowsPadding;
 	float w;
 } HNPointXYZW;
 

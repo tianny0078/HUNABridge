@@ -42,7 +42,8 @@ public:
   {
     IMAGE = 0,
     CLOUD,
-    BOTH
+    BOTH,
+	CONTROL // send rgbd images, receive control command
   };
 
 private:
@@ -188,6 +189,10 @@ return;
     case BOTH:
       imageViewerThread = std::thread(&Receiver::imageViewer, this);
       cloudViewer();
+      break;
+    case CONTROL:
+      youbotControlThread = std::thread(&Receiver::youbotController, this);
+      imageViewer();
       break;
     }
   }
@@ -345,16 +350,30 @@ return;
   void youbotController(){
 	std::chrono::time_point<std::chrono::high_resolution_clock> start, now;
 	start = std::chrono::high_resolution_clock::now();
+	OUT_INFO("yobot controlling thread is running~\n");
 	for(; running && ros::ok();)
 	{
 		// receive the data
-
-
-		// parse into (x, y, z, w)
+		float x = 0.0, y = 0.0, z = 0.0, w = 0.0;
+        if(!receiver_ptr->ReceiveXYZW(x, y, z, w)){
+        	OUT_INFO("Connection lost...");
+            running = false;
+        }
 
 		// control the robot
+        // use the x, y, z, w to control the robot
+        // x, y (linear velocity), z, w (angular velocity)
 
+        int key = cv::waitKey(1);
+        switch(key & 0xFF)
+        {
+        case 27:
+        case 'q':
+          running = false;
+          break;
+        }
 	}
+	// clean youbot
   }
 
   void cloudViewer()
@@ -650,6 +669,9 @@ int main(int argc, char **argv)
     else if(param == "both")
     {
       mode = Receiver::BOTH;
+    }
+    else if(param == "control"){
+      mode = Receiver::CONTROL;
     }
     else
     {

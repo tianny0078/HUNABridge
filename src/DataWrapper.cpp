@@ -17,7 +17,19 @@ void DataWrapper::UnwrapXYZWData(unsigned char * pdata, float &x, float &y, floa
 	pos += sizeof(eventid);
 	memcpy(&time, pdata+pos, sizeof(time));
 	pos += sizeof(time);
-	//
+	HNPointXYZW xyzw;
+	memcpy(&xyzw, pdata+pos, sizeof(xyzw));
+	pos += sizeof(xyzw);
+	x = xyzw.x;
+	y = xyzw.y;
+	z = xyzw.z;
+	w = xyzw.w;
+	int packageType;
+	long long timestep;
+	memcpy(&packageType, pdata+pos, sizeof(packageType));
+	pos += sizeof(packageType);
+	memcpy(&timestep, pdata+pos, sizeof(timestep));
+	pos += sizeof(timestep);
 }
 
 

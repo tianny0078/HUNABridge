@@ -313,13 +313,17 @@ void ImageSender::ReceiveImage(cv::Mat& image) {
   pic_filename_ = oss.str();
 }
 
-void ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
+bool ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
 	int size = 0;
 	int bytes = recv(socket_fdesc_, (char *)&size, sizeof(int), 0);
 	std::vector<unsigned char> data;
 	bytes = recv(socket_fdesc_, (char *)&data, size, 0);
-	if(bytes != size) printf("Full packet not read\n");
+	if(bytes != size) {
+		printf("Full packet not read\n");
+		return false;
+	}
 	wrapper->UnwrapXYZWData(&data[0], x, y, z, w);
+	return true;
 }
 
 void ImageSender::WriteImage(cv::Mat& image) {

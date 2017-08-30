@@ -390,8 +390,11 @@ private:
 			OUT_INFO("MOVING...");
 			geometry_msgs::Twist twist;
 			ros::Rate poll_rate(100);
-			while(platformPublisher.getNumSubscribers() == 0)
+			int k = 0;
+			while(platformPublisher.getNumSubscribers() == 0 && k++ < 5){
+				OUT_INFO("WAITING...");
 			    poll_rate.sleep();
+			}
 
 			twist.linear.x = 0.05;  // with 0.05 m per sec
 			twist.linear.y = 0;

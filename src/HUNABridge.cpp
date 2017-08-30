@@ -356,10 +356,13 @@ private:
 	{
 		// receive the data
 		float x = 0.0, y = 0.0, z = 0.0, w = 0.0;
+//		OUT_INFO("BEFORE RECEIVE..");
         if(!receiver_ptr->ReceiveXYZW(x, y, z, w)){
         	OUT_INFO("Connection lost...");
             running = false;
         }
+        OUT_INFO("AFTER RECEIVE..");
+
 
         ROS_DEBUG("%f %f %f %f", x, y, z, w);
 		// control the robot

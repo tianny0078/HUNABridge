@@ -325,6 +325,7 @@ bool ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
 		return false;
 	}
 	wrapper->UnwrapXYZWData(&data[0], x, y, z, w);
+	fs << x << " " << y << " " << z << " " << w << std::endl;
 	return true;
 }
 

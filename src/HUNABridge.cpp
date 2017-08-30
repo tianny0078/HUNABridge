@@ -360,6 +360,9 @@ private:
             running = false;
         }
 
+
+        std::cout << x << " " << y << " " << z
+        		<< " " << w << std::endl;
 		// control the robot
         // use the x, y, z, w to control the robot
         // x, y (linear velocity), z, w (angular velocity)

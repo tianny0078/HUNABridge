@@ -21,6 +21,11 @@
 #include <ros/console.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
+#include <boost/units/systems/si.hpp>
+#include <boost/units/io.hpp>
+#include <brics_actuator/JointPositions.h>
+#include <geometry_msgs/Twist.h>
+
 
 #include <cv_bridge/cv_bridge.h>
 
@@ -88,7 +93,8 @@ private:
 
   int rows;
   int cols;
-
+  int count;
+  ros::Publisher platformPublisher;
 public:
   Receiver(const std::string &topicColor, const std::string &topicDepth, const bool useExact, const bool useCompressed)
     : topicColor(topicColor), topicDepth(topicDepth), useExact(useExact), useCompressed(useCompressed),
@@ -107,7 +113,9 @@ public:
 
     rows = 424;
     cols = 512;
-
+    
+    platformPublisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    count = 0;
   }
 
   ~Receiver()
@@ -357,29 +365,33 @@ private:
 	{
 		// receive the data
 		float x = 0.0, y = 0.0, z = 0.0, w = 0.0;
-		OUT_INFO("BEFORE RECEIVE..");
 
         if(!receiver_ptr->ReceiveXYZW(x, y, z, w)){
         	OUT_INFO("Connection lost...");
             running = false;
         }
 
-        OUT_INFO("AFTER RECEIVE..");
 
 
-        ROS_DEBUG("%f %f %f %f", x, y, z, w);
 		// control the robot
         // use the x, y, z, w to control the robot
         // x, y (linear velocity), z, w (angular velocity)
 
-        int key = cv::waitKey(1);
-        switch(key & 0xFF)
-        {
-        case 27:
-        case 'q':
-          running = false;
-          break;
-        }
+        // forwardi
+	if(count == 0){
+	geometry_msgs::Twist twist;
+
+        twist.linear.x = 0.05;  // with 0.05 m per sec
+        platformPublisher.publish(twist);
+        ros::Duration(1).sleep();
+
+        // stop
+        twist.linear.x = 0;
+        twist.linear.y = 0;
+        platformPublisher.publish(twist);
+
+        ++count;
+	}
 	}
 	// clean youbot
   }
@@ -619,6 +631,9 @@ int main(int argc, char **argv)
   {
     return 0;
   }
+
+
+
 
   std::string ns = K2_DEFAULT_NS;
   std::string topicColor = K2_TOPIC_QHD K2_TOPIC_IMAGE_COLOR K2_TOPIC_IMAGE_RECT;

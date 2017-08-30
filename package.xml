@@ -21,6 +21,9 @@
   <build_depend>kinect2_bridge</build_depend>
   <build_depend>libpcl-all-dev</build_depend>
   <build_depend>cv_bridge</build_depend><!-- Depend on cv_bridge instead of libopencv-dev to support ROS Hydro.-->
+  <build_depend>brics_actuator</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+
 
   <run_depend>message_runtime</run_depend>
   <run_depend>roscpp</run_depend>
@@ -34,6 +37,8 @@
   <run_depend>libpcl-all-dev</run_depend>
   <run_depend>libpcl-all</run_depend>
   <run_depend>cv_bridge</run_depend><!-- Depend on cv_bridge instead of libopencv-dev to support ROS Hydro.-->
+  <run_depend>brics_actuator</run_depend>
+  <run_depend>geometry_msgs</run_depend>
 
   <export>
   </export>

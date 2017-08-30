@@ -57,12 +57,12 @@ typedef struct HNPoint2{
 } HNPointXY;
 
 typedef struct HNPoint3 : public HNPoint2{
-	long _windowsPadding;
+	int _windowsPadding;
 	float z;
 } HNPointXYZ;
 
 typedef struct HNPoint4: public HNPoint3{
-	long _windowsPadding;
+	int _windowsPadding;
 	float w;
 } HNPointXYZW;
 

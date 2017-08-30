@@ -314,8 +314,9 @@ void ImageSender::ReceiveImage(cv::Mat& image) {
 bool ImageSender::ReceiveXYZW(float &x, float &y, float &z, float &w){
 	int size = 0;
 	int bytes = recv(socket_fdesc_, (char *)&size, sizeof(int), 0);
+
 	std::vector<unsigned char> data;
-	bytes = recv(socket_fdesc_, (char *)&data, size, 0);
+	bytes = recv(socket_fdesc_, (char *)&data[0], size, 0);
 	if(bytes != size) {
 		printf("Full packet not read\n");
 		return false;

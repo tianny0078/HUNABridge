@@ -115,6 +115,7 @@ public:
     cols = 512;
     
     platformPublisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    sleep(1);
     count = 0;
   }
 
@@ -378,20 +379,22 @@ private:
         // x, y (linear velocity), z, w (angular velocity)
 
         // forwardi
-	if(count == 0){
-	geometry_msgs::Twist twist;
+		if(count == 0){
+			OUT_INFO("MOVING...");
+			geometry_msgs::Twist twist;
 
-        twist.linear.x = 0.05;  // with 0.05 m per sec
-        platformPublisher.publish(twist);
-        ros::Duration(1).sleep();
+			twist.linear.x = 0.05;  // with 0.05 m per sec
+			twist.linear.y = 0;
+			platformPublisher.publish(twist);
+			ros::Duration(1).sleep();
 
-        // stop
-        twist.linear.x = 0;
-        twist.linear.y = 0;
-        platformPublisher.publish(twist);
+			// stop
+			twist.linear.x = 0;
+			twist.linear.y = 0;
+			platformPublisher.publish(twist);
 
-        ++count;
-	}
+			++count;
+		}
 	}
 	// clean youbot
   }
@@ -631,9 +634,6 @@ int main(int argc, char **argv)
   {
     return 0;
   }
-
-
-
 
   std::string ns = K2_DEFAULT_NS;
   std::string topicColor = K2_TOPIC_QHD K2_TOPIC_IMAGE_COLOR K2_TOPIC_IMAGE_RECT;

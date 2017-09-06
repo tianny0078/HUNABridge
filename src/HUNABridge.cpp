@@ -369,6 +369,7 @@ private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> start, now;
 	start = std::chrono::high_resolution_clock::now();
 	OUT_INFO("yobot controlling thread is running~\n");
+	bool taskFinished = true;
 	for(; running && ros::ok();)
 	{
 		// receive the data
@@ -379,14 +380,12 @@ private:
             running = false;
         }
 
-
-
 		// control the robot
         // use the x, y, z, w to control the robot
         // x, y (linear velocity), z, w (angular velocity)
 
         // forwardi
-		if(count <= 100){
+		//if(count <= 100){
 			OUT_INFO("MOVING...");
 			geometry_msgs::Twist twist;
 			ros::Rate poll_rate(100);
@@ -396,23 +395,31 @@ private:
 			    poll_rate.sleep();
 			}
 
-			twist.linear.x = 0.05;  // with 0.05 m per sec
-			twist.linear.y = 0;
+			twist.linear.x = x * 0.05;  // with 0.05 m per sec
+			twist.linear.y = y * 0.05;
+			twist.angular.z = w * 0.05;
 			platformPublisher.publish(twist);
 			ros::Duration(1).sleep();
 			
+
+			/*
 			twist.linear.x = -0.05;
 			twist.linear.y = 0.0;
 			platformPublisher.publish(twist);
 			ros::Duration(1).sleep();
+			*/
 
 			// stop
 			twist.linear.x = 0;
 			twist.linear.y = 0;
+			twist.linear.z = 0;
+			twist.angular.x = 0;
+			twist.angular.y = 0;
+			twist.angular.z = 0;
 			platformPublisher.publish(twist);
 
-			++count;
-		}
+			//++count;
+		//}
 	}
 	// clean youbot
   }

@@ -386,7 +386,7 @@ private:
         // x, y (linear velocity), z, w (angular velocity)
 
         // forwardi
-		if(count == 0){
+		if(count <= 100){
 			OUT_INFO("MOVING...");
 			geometry_msgs::Twist twist;
 			ros::Rate poll_rate(100);
@@ -398,6 +398,11 @@ private:
 
 			twist.linear.x = 0.05;  // with 0.05 m per sec
 			twist.linear.y = 0;
+			platformPublisher.publish(twist);
+			ros::Duration(1).sleep();
+			
+			twist.linear.x = -0.05;
+			twist.linear.y = 0.0;
 			platformPublisher.publish(twist);
 			ros::Duration(1).sleep();
 

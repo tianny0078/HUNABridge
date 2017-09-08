@@ -386,7 +386,9 @@ private:
 
         // forwardi
 		//if(count <= 100){
+	if(w != 0){
 			OUT_INFO("MOVING...");
+        	
 			geometry_msgs::Twist twist;
 			ros::Rate poll_rate(100);
 			int k = 0;
@@ -395,8 +397,9 @@ private:
 			    poll_rate.sleep();
 			}
 
-			twist.linear.x = x * 0.05;  // with 0.05 m per sec
-			twist.linear.y = y * 0.05;
+	
+		twist.linear.x = x * 0.05;  // with 0.05 m per sec	
+		twist.linear.y = y * 0.05;
 			twist.angular.z = w * 0.05;
 			platformPublisher.publish(twist);
 			ros::Duration(1).sleep();
@@ -419,7 +422,7 @@ private:
 			platformPublisher.publish(twist);
 
 			//++count;
-		//}
+		}
 	}
 	// clean youbot
   }

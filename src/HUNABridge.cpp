@@ -415,10 +415,11 @@ private:
 			*/
 				// turn until the abs is small
 				float dir = w > 0 ? 1 : -1;
-				while(abs(w) > 0.01){
-					float step = 0.05 > abs(w) ? abs(w) : 0.05;
+				float absw = w * dir;
+				while(absw > 0.01){
+					float step = 0.05 > absw ? absw : 0.05;
 					twist.angular.z = dir * step;
-					w = (abs(w) - step) * dir;
+					absw -= step;
 
 					platformPublisher.publish(twist);
 					ros::Duration(1).sleep();

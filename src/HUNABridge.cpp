@@ -397,30 +397,43 @@ private:
 			    poll_rate.sleep();
 			}
 
-	
-		twist.linear.x = x * 0.05;  // with 0.05 m per sec	
-		twist.linear.y = y * 0.05;
-			twist.angular.z = w * 0.05;
-			platformPublisher.publish(twist);
-			ros::Duration(1).sleep();
-			
-
 			/*
-			twist.linear.x = -0.05;
-			twist.linear.y = 0.0;
-			platformPublisher.publish(twist);
-			ros::Duration(1).sleep();
+				twist.linear.x = x * 0.05;  // with 0.05 m per sec
+				twist.linear.y = y * 0.05;
+				twist.angular.z = w * 0.05;
+				platformPublisher.publish(twist);
+				ros::Duration(1).sleep();
+
+				// stop
+				twist.linear.x = 0;
+				twist.linear.y = 0;
+				twist.linear.z = 0;
+				twist.angular.x = 0;
+				twist.angular.y = 0;
+				twist.angular.z = 0;
+				platformPublisher.publish(twist);
 			*/
+				// turn until the abs is small
+				float dir = w > 0 ? 1 : -1;
+				while(abs(w) > 0.01){
+					float step = 0.05 > abs(w) ? abs(w) : 0.05;
+					twist.angular.z = dir * step;
+					w = (abs(w) - step) * dir;
 
-			// stop
-			twist.linear.x = 0;
-			twist.linear.y = 0;
-			twist.linear.z = 0;
-			twist.angular.x = 0;
-			twist.angular.y = 0;
-			twist.angular.z = 0;
-			platformPublisher.publish(twist);
+					platformPublisher.publish(twist);
+					ros::Duration(1).sleep();
+				}
 
+				// stop
+				twist.linear.x = 0;
+				twist.linear.y = 0;
+				twist.linear.z = 0;
+				twist.angular.x = 0;
+				twist.angular.y = 0;
+				twist.angular.z = 0;
+				platformPublisher.publish(twist);
+			    // move until the abs is small
+			}
 			//++count;
 		}
 	}

@@ -433,7 +433,6 @@ private:
 				twist.angular.z = 0;
 				platformPublisher.publish(twist);
 			    // move until the abs is small
-			}
 			//++count;
 		}
 	}

@@ -417,6 +417,7 @@ private:
 				float dir = w > 0 ? 1 : -1;
 				float absw = w * dir;
 				while(absw > 0.01){
+					OUT_INFO("WHILE...");
 					float step = 0.05 > absw ? absw : 0.05;
 					twist.angular.z = dir * step;
 					absw -= step;
@@ -426,6 +427,7 @@ private:
 				}
 
 				// stop
+				OUT_INFO("STOPING...");
 				twist.linear.x = 0;
 				twist.linear.y = 0;
 				twist.linear.z = 0;

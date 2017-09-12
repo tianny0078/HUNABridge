@@ -174,8 +174,9 @@ private:
 	printf("miliseconds: %llu\n", (unsigned long long)(tv.tv_usec)/1000);
 	long long mili = (long long)(tv.tv_usec)/1000;
 	// compute the timestep based on HUNA format
-	long long timestep = (((long long)(((tm.tm_year + 1900)*365 + (tm.tm_mon+1)*30 + tm.tm_mday)*24 + tm.tm_hour)*60 + tm.tm_min) * 60 + tm.tm_sec) * 1000 + mili;
-	printf("timestep: %ll\n");
+	long long timestep_huna = (((long long)(((tm.tm_year + 1900)*365 + (tm.tm_mon+1)*30 + tm.tm_mday)*24 + tm.tm_hour)*60
+			+ tm.tm_min) * 60 + tm.tm_sec) * 1000 + mili;
+	printf("timestep: %ll\n", timestep_huna);
 
 
     // connection initialization

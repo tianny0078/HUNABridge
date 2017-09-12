@@ -13,8 +13,7 @@
 #include <string>
 #include <vector>
 #include "HNDataTypes.hpp"
-
-
+#include <sys/time.h>
 
 
 class DataWrapper{
@@ -37,6 +36,7 @@ private:
     int GetIndexImageSize(cv::Mat & indexImage);
     int GetKinectDataSize(cv::Mat & depthImage, cv::Mat & colorImage);
     int GetTailSize();
+    long long GetTimeStep();
 };
 
 

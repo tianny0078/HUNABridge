@@ -44,7 +44,7 @@ int DataWrapper::WrapDepthImage(cv::Mat & depthImage, std::vector<unsigned char>
     memcpy(pdata+pos, &size, sizeof(size));
     pos += sizeof(size);
     WrapDepthImage(depthImage, pdata, pos);
-    WrapTail(1, 1, pdata, pos);
+    WrapTail(HNCAPTUREDDEPTHIMAGE_ID, 1, pdata, pos);
     return packetSize;
 }
 
@@ -57,7 +57,7 @@ int DataWrapper::WrapColorImage(cv::Mat & colorImage, std::vector<unsigned char>
     memcpy(pdata+pos, &size, sizeof(size));
     pos += sizeof(size);
     WrapColorImage(colorImage, pdata, pos);
-    WrapTail(1, 1, pdata, pos);
+    WrapTail(HNCAPTUREDIMAGE_ID, 1, pdata, pos);
     return packetSize;
 }
 
@@ -70,7 +70,7 @@ int DataWrapper::WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, std:
 	memcpy(pdata+pos, &size, sizeof(size));
 	pos += sizeof(size);
 	WrapKinectData(depthImage, colorImage, pdata, pos);
-	WrapTail(1, 1, pdata, pos);
+	WrapTail(HNCAPTUREDKINECTDATA_ID, 1, pdata, pos);
 	return packetSize;
 }
 
@@ -155,16 +155,17 @@ int DataWrapper::WrapKinectData(cv::Mat & depthImage, cv::Mat & colorImage, unsi
 
 
 int DataWrapper::WrapHeader(unsigned int eventid, unsigned char * pdata, int & pos){
-	long long time = 20170713;
+	long long timestep = GetTimeStep();
 	// wrap eventid and capturedTime
 	memcpy(pdata+pos, &eventid, sizeof(eventid));
 	pos += sizeof(eventid);
-	memcpy(pdata+pos, &time, sizeof(time));
-	pos += sizeof(time);
+	memcpy(pdata+pos, &timestep, sizeof(timestep));
+	pos += sizeof(timestep);
     return pos;
 }
 int DataWrapper::WrapTail(int packageType, long long timestep,
 		unsigned char * pdata, int& pos){
+	  timestep = GetTimeStep();
 	  memcpy(pdata+pos, &packageType, sizeof(packageType));
 	  pos += sizeof(packageType);
 	  memcpy(pdata+pos, &timestep, sizeof(timestep));
@@ -198,5 +199,22 @@ int DataWrapper::GetKinectDataSize(cv::Mat & depthImage, cv::Mat & colorImage){
 }
 int DataWrapper::GetTailSize(){
 	return sizeof(int) + sizeof(long long);
+}
+
+long long DataWrapper::GetTimeStep(){
+	auto timenow = std::chrono::system_clock::now();
+	time_t t = std::chrono::system_clock::to_time_t(timenow);
+	struct tm tm = *gmtime(&t);
+	//printf("now: %d %d %d %d:%d:%d \n", tm.tm_year + 1900, tm.tm_mon + 1,
+			//tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	//printf("miliseconds: %llu\n", (unsigned long long)(tv.tv_usec)/1000);
+	long long mili = (long long)(tv.tv_usec)/1000;
+	// compute the timestep based on HUNA format
+	long long timestep_huna = (((long long)(((tm.tm_year + 1900)*365 + (tm.tm_mon+1)*30 + tm.tm_mday)*24 + tm.tm_hour)*60
+			+ tm.tm_min) * 60 + tm.tm_sec) * 1000 + mili;
+	//printf("timestep: %ll\n", timestep_huna);
+	return timestep_huna;
 }
 

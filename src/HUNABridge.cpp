@@ -166,13 +166,17 @@ private:
 
 	auto timenow = std::chrono::system_clock::now();
 	time_t t = std::chrono::system_clock::to_time_t(timenow);
-	std::cout << std::ctime(&t) << endl;
 	struct tm tm = *gmtime(&t);
 	printf("now: %d %d %d %d:%d:%d \n", tm.tm_year + 1900, tm.tm_mon + 1,
 			tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	printf("miliseconds: %llu\n", (unsigned long long)(tv.tv_usec)/1000);
+	long long mili = (long long)(tv.tv_usec)/1000;
+	// compute the timestep based on HUNA format
+	long long timestep = (((long long)(((tm.tm_year + 1900)*365 + (tm.tm_mon+1)*30 + tm.tm_mday)*24 + tm.tm_hour)*60 + tm.tm_min) * 60 + tm.tm_sec) * 1000 + mili;
+	printf("timestep: %ll\n");
+
 
     // connection initialization
     OUT_INFO("Waiting for connection...");

@@ -6,6 +6,8 @@
  */
 
 #include "DataWrapper.hpp"
+
+
 //public
 void DataWrapper::UnwrapXYZWData(unsigned char * pdata, float &x, float &y, float &z, float& w){
 	// parse the saved data into (x, y, z, w).
@@ -161,7 +163,6 @@ int DataWrapper::WrapHeader(unsigned int eventid, unsigned char * pdata, int & p
 	pos += sizeof(time);
     return pos;
 }
-
 int DataWrapper::WrapTail(int packageType, long long timestep,
 		unsigned char * pdata, int& pos){
 	  memcpy(pdata+pos, &packageType, sizeof(packageType));

@@ -39,6 +39,7 @@
 
 #include <kinect2_bridge/kinect2_definitions.h>
 #include "ImageSender.hpp"
+#include <sys/time.h>
 //the defination of receiver
 
 class Receiver
@@ -162,6 +163,11 @@ private:
     spinner.start();
 
     std::chrono::milliseconds duration(1);
+
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+	printf("now: %d %d %d %d:%d:%d \n", tm.tm_year + 1900, tm.tm_mon + 1,
+			tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 
     // connection initialization
     OUT_INFO("Waiting for connection...");

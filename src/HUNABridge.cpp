@@ -166,6 +166,7 @@ private:
 
 	auto timenow = std::chrono::system_clock::now();
 	time_t t = std::chrono::system_clock::to_time_t(timenow);
+	std::cout << std::ctime(&t) << endl;
 	struct tm tm = *localtime(&t);
 	printf("now: %d %d %d %d:%d:%d \n", tm.tm_year + 1900, tm.tm_mon + 1,
 			tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);

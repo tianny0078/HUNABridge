@@ -167,9 +167,12 @@ private:
 	auto timenow = std::chrono::system_clock::now();
 	time_t t = std::chrono::system_clock::to_time_t(timenow);
 	std::cout << std::ctime(&t) << endl;
-	struct tm tm = *localtime(&t);
+	struct tm tm = *gmtime(&t);
 	printf("now: %d %d %d %d:%d:%d \n", tm.tm_year + 1900, tm.tm_mon + 1,
 			tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	printf("miliseconds: %llu\n", (unsigned long long)(tv.tv_usec)/1000);
 
     // connection initialization
     OUT_INFO("Waiting for connection...");

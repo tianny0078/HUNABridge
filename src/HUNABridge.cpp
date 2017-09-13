@@ -391,7 +391,7 @@ private:
 
         // forwardi
 		//if(count <= 100){
-	if(w != 0){
+	if(z != 0){
 			OUT_INFO("MOVING...");
         	
 			geometry_msgs::Twist twist;
@@ -402,7 +402,7 @@ private:
 			    poll_rate.sleep();
 			}
 
-			/*
+			if(z == 1.0){
 				twist.linear.x = x * 0.05;  // with 0.05 m per sec
 				twist.linear.y = y * 0.05;
 				twist.angular.z = w * 0.05;
@@ -417,7 +417,8 @@ private:
 				twist.angular.y = 0;
 				twist.angular.z = 0;
 				platformPublisher.publish(twist);
-			*/
+			}
+			/*
 				// turn until the abs is small
 				float dir = w > 0 ? 1 : -1;
 				float absw = w * dir;
@@ -441,6 +442,7 @@ private:
 				twist.angular.z = 0;
 				platformPublisher.publish(twist);
 			    // move until the abs is small
+			     */
 			//++count;
 		}
 	}

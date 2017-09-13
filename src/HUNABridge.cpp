@@ -173,7 +173,7 @@ private:
 
     // wait for 1 min to connect
     OUT_INFO("Sleeping...");
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    std::this_thread::sleep_for(std::chrono::seconds(5));
     OUT_INFO("Waking up...");
 
     OUT_INFO("Waiting for another connection...");
@@ -392,7 +392,6 @@ private:
         // forwardi
 		//if(count <= 100){
 	if(z != 0){
-			OUT_INFO("MOVING...");
         	
 			geometry_msgs::Twist twist;
 			ros::Rate poll_rate(100);
@@ -402,13 +401,38 @@ private:
 			    poll_rate.sleep();
 			}
 
-			if(z == 1.0){
+			if(z == 1.0){ // controlled by keyboard
+				OUT_INFO("MOVIING BY KEYBOARD...");
 				twist.linear.x = x * 0.05;  // with 0.05 m per sec
 				twist.linear.y = y * 0.05;
 				twist.angular.z = w * 0.05;
 				platformPublisher.publish(twist);
 				ros::Duration(1).sleep();
 
+				// stop
+				twist.linear.x = 0;
+				twist.linear.y = 0;
+				twist.linear.z = 0;
+				twist.angular.x = 0;
+				twist.angular.y = 0;
+				twist.angular.z = 0;
+				platformPublisher.publish(twist);
+			}
+			else if(z == 2.0) {// controlled by haptic to turn the robot
+				OUT_INFO("MOVING ACCORDING TO HAPTIC MARKER...");
+				twist.angular.z = w * 0.05;
+				platformPublisher.publish(twist);
+				ros::Duration(1).sleep();
+
+				// stop
+				twist.linear.x = 0;
+				twist.linear.y = 0;
+				twist.linear.z = 0;
+				twist.angular.x = 0;
+				twist.angular.y = 0;
+				twist.angular.z = 0;
+				platformPublisher.publish(twist);
+			} else if(z == 3.0){
 				// stop
 				twist.linear.x = 0;
 				twist.linear.y = 0;

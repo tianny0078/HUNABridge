@@ -171,6 +171,11 @@ private:
     sender_ptr->ConnectToNetwork();
     OUT_INFO("Connection is built...");
 
+    // wait for 1 min to connect
+    OUT_INFO("Sleeping...");
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+    OUT_INFO("Waking up...");
+
     OUT_INFO("Waiting for another connection...");
     port = 10022;
     std::unique_ptr<ImageSender> client_ptr(new ImageSender(port));

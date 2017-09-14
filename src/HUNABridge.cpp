@@ -433,7 +433,29 @@ private:
 				twist.angular.z = 0;
 				platformPublisher.publish(twist);
 			} else if(z == 3.0){
+				OUT_INFO("MOVING FORWARD...");
+				twist.angular.z = w * 0.05;
+				platformPublisher.publish(twist);
+				ros::Duration(1).sleep();
+
 				// stop
+				twist.linear.x = 0;
+				twist.linear.y = 0;
+				twist.linear.z = 0;
+				twist.angular.x = 0;
+				twist.angular.y = 0;
+				twist.angular.z = 0;
+				platformPublisher.publish(twist);
+			} else if(z == 4.0){
+				float delta = x;
+
+				while(delta > 0.03){
+					twist.linear.x = 0.05;
+					delta -= 0.05;
+
+					platformPublisher.publish(twist);
+					ros::Duration(1).sleep();
+				}
 				twist.linear.x = 0;
 				twist.linear.y = 0;
 				twist.linear.z = 0;

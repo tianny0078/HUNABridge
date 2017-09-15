@@ -434,7 +434,7 @@ private:
 				platformPublisher.publish(twist);
 			} else if(z == 3.0){
 				OUT_INFO("MOVING FORWARD...");
-				twist.angular.z = w * 0.05;
+				twist.linear.x = x * 0.05;
 				platformPublisher.publish(twist);
 				ros::Duration(1).sleep();
 
